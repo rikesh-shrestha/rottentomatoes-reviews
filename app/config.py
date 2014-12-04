@@ -9,3 +9,5 @@ class BaseConfig(object):
         )
     )
     SQLITE_DB = path.join(STORAGE_PATH, 'review.db')
+    ROTTEN_TOMATO_APIKEY = "9pttf673jh8byc3z6qryaxy9"
+    RECORD_LIMIT = 20
