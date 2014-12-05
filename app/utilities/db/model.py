@@ -6,6 +6,7 @@ class Model():
     """docstring for Model"""
     db_connection = None
     table = ''
+    primary_key = ''
 
     def __init__(self):
         self.db_connection = db_connection
@@ -13,8 +14,10 @@ class Model():
     def set_table(self, table):
         self.table = table
 
-    def get(self, query=[]):
-        pass
+    def get(self, filters={}):
+        query = self.prep_get_query(filters)
+        self.db_connection.get().execute(query)
+        return self.db_connection.get().fetchall()
 
     def save(self, data, id=None):
         query = ""
@@ -32,12 +35,34 @@ class Model():
 
     def prep_insert_query(self, params):
         query = ""
-        query = "INSERT INTO {0:s} ('id', {1:s}) VALUES (NULL, {2:s})" . format(
+        query = "INSERT INTO {0:s} ('{1:s}', {2:s}) VALUES (NULL, {3:s})" . format(
             self.table,
+            self.primary_key,
             "'" + "', '".join(params.keys()) + "'",
             "'" + "', '".join(params.values()) + "'"
         )
         return query
 
     def prep_get_query(self, filters):
-        pass
+        query = ""
+        _select = "*"
+        _where = ""
+
+        if 'select' in filters:
+            _select = ""
+            for key, value in filters['select']:
+                _select += " {0:s} = '{1:s}'" . format(key, value)
+
+        if 'where' in filters:
+            for key, value in filters['where']:
+                _where += " {0:s} = '{1:s}'" . format(key, value)
+
+            _where = " WHERE" + _where
+
+        query = "SELECT {0:s} FROM {1:s}{2:s}" . format(
+            _select,
+            self.table,
+            _where
+        )
+
+        return query
