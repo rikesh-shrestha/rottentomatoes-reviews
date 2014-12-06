@@ -1,5 +1,5 @@
 import sys
-from app import RottenTomato, config
+from app import RottenTomato
 import app.utilities.db.models as models
 
 
@@ -8,12 +8,16 @@ def get_movies():
 
 
 def get_reviews():
-    print 'we are working to get reviews'
+    return RottenTomato.Reviews()
 
 
 def get_action_dispatcher(action):
     if action == 'movies':
         return get_movies()
+
+    elif action == 'reviews':
+        return get_reviews()
+
     else:
         raise Exception("Proper action not found")
 
@@ -36,13 +40,13 @@ def main():
         get_tests()
     else:
         action_dispatcher = get_action_dispatcher(action)
+        action_dispatcher.start()
 
-        try:
-            action_dispatcher.start()
-        except Exception, e:
-            raise e
-        else:
-            pass
+        # try:
+        # except Exception, e:
+        #     raise e
+        # else:
+        #     pass
 
 if __name__ == '__main__':
     main()

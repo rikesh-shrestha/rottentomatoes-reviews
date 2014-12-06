@@ -35,12 +35,13 @@ class Model():
 
     def prep_insert_query(self, params):
         query = ""
-        query = "INSERT INTO {0:s} ('{1:s}', {2:s}) VALUES (NULL, {3:s})" . format(
-            self.table,
-            self.primary_key,
-            "'" + "', '".join(params.keys()) + "'",
-            "'" + "', '".join(params.values()) + "'"
-        )
+        query = "INSERT INTO {0:s} ('{1:s}', {2:s}) "\
+            "VALUES (NULL, {3:s})" . format(
+                self.table,
+                self.primary_key,
+                '"' + '", "'.join(params.keys()) + '"',
+                '"' + '", "'.join(params.values()) + '"'
+            )
         return query
 
     def prep_get_query(self, filters):
@@ -54,8 +55,8 @@ class Model():
                 _select += " {0:s} = '{1:s}'" . format(key, value)
 
         if 'where' in filters:
-            for key, value in filters['where']:
-                _where += " {0:s} = '{1:s}'" . format(key, value)
+            for value in filters['where']:
+                _where += " {0:s} {1:s} '{2:s}'".format(*value)
 
             _where = " WHERE" + _where
 
